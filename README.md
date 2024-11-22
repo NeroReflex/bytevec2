@@ -1,5 +1,5 @@
-bytevec: A Rust serialization library that uses byte vectors
-============================================================
+bytevec2: A Rust serialization library that uses byte vectors
+=============================================================
 
 [![Build Status](https://travis-ci.org/fero23/bytevec.svg?branch=master)](https://travis-ci.org/fero23/bytevec)
 [![](https://img.shields.io/crates/v/bytevec.svg)](https://crates.io/crates/bytevec)
@@ -8,6 +8,9 @@ bytevec: A Rust serialization library that uses byte vectors
 
 bytevec takes advantage of Rust's concise and stable type system to
 serialize data objects to a byte vector (`Vec<u8>`) and back.
+
+bytevec2 is a fork of bytevec meant to be used in recent versions of the rust compilers,
+getting rids of warnings and introducing new features.
 
 Read the documentation [here](http://fero23.github.io/doc/bytevec/).
 
@@ -126,9 +129,9 @@ as long as all of the fields also implement both traits.
 
 ```rust
 #[macro_use]
-extern crate bytevec;
+extern crate bytevec2;
 
-use bytevec::{ByteEncodable, ByteDecodable};
+use bytevec2::{ByteEncodable, ByteDecodable};
 
 bytevec_decl! {
     #[derive(PartialEq, Eq, Debug)]
@@ -164,9 +167,9 @@ implement [`Default`].
 
 ```rust
 #[macro_use]
-extern crate bytevec;
+extern crate bytevec2;
 
-use bytevec::{ByteEncodable, ByteDecodable};
+use bytevec2::{ByteEncodable, ByteDecodable};
 
 #[derive(PartialEq, Eq, Debug, Default)]
 struct Vertex3d {

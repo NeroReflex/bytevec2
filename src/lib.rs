@@ -122,9 +122,9 @@
 //! 
 //! ```rust
 //! # #[macro_use]
-//! # extern crate bytevec;
+//! # extern crate bytevec2;
 //! #
-//! # use bytevec::{ByteEncodable, ByteDecodable};
+//! # use bytevec2::{ByteEncodable, ByteDecodable};
 //! # fn main() {
 //! let slice = &["Rust", "Is", "Awesome!"];
 //! let bytes = slice.encode::<u32>().unwrap();

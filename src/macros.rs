@@ -18,9 +18,9 @@
 ///
 /// ```rust
 /// # #[macro_use]
-/// # extern crate bytevec;
+/// # extern crate bytevec2;
 /// #
-/// # use bytevec::{ByteEncodable, ByteDecodable};
+/// # use bytevec2::{ByteEncodable, ByteDecodable};
 /// #
 /// #[derive(PartialEq, Eq, Debug, Default)]
 /// struct Vertex3d {
@@ -149,9 +149,9 @@ macro_rules! bytevec_impls {
 ///
 /// ```rust
 /// # #[macro_use]
-/// # extern crate bytevec;
+/// # extern crate bytevec2;
 /// #
-/// # use bytevec::{ByteEncodable, ByteDecodable};
+/// # use bytevec2::{ByteEncodable, ByteDecodable};
 /// #
 /// bytevec_decl! {
 ///     #[derive(PartialEq, Eq, Debug)]
