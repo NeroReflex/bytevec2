@@ -1,7 +1,8 @@
 [package]
-name = "bytevec"
-version = "0.2.0"
-authors = ["Fernando Ulloa <fjulloap23@gmail.com>"]
+name = "bytevec2"
+edition = "2015"
+version = "0.3.0"
+authors = ["Fernando Ulloa <fjulloap23@gmail.com>", "Denis Benato <benato.denis96@gmail.com>"]
 description = "A Rust serialization library that uses byte vectors"
 license = "Apache-2.0/MIT"
 repository = "https://github.com/fero23/bytevec"
