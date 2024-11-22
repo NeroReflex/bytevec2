@@ -135,3 +135,28 @@ fn test_decode_limit_err() {
     let bytes = vec.encode::<u32>().unwrap();
     assert!(<Vec<u32>>::decode_max::<u32>(&bytes, 100).is_err());
 }
+
+#[test]
+fn test_serialize_bool() {
+    bytevec_decl! {
+        #[derive(PartialEq, Eq, Clone, Debug)]
+        struct BooleanStuff {
+            simple: bool,
+            optional: Vec<bool>
+        }
+    }
+    
+    let data1 = vec![
+        BooleanStuff {
+            simple: true,
+            optional: vec![true, false, false, false]
+        },
+        BooleanStuff {
+            simple: false,
+            optional: vec![true, false, true, false]
+        }
+    ];
+    let bytes = data1.encode::<u32>().unwrap();
+    let data2 = Vec::<BooleanStuff>::decode::<u32>(&bytes).unwrap();
+    assert_eq!(data1, data2);
+}

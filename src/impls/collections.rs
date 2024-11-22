@@ -461,3 +461,30 @@ impl ByteDecodable for () {
         Ok(())
     }
 }
+
+impl ByteEncodable for bool {
+    fn get_size<Size>(&self) -> Option<Size>
+        where Size: BVSize + ByteEncodable
+    {
+        Some(Size::from_usize(1))
+    }
+
+    fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
+        where Size: BVSize + ByteEncodable
+    {
+        Ok(
+            match self {
+                true => vec![1u8],
+                false => vec![0u8],
+            }
+        )
+    }
+}
+
+impl ByteDecodable for bool {
+    fn decode<Size>(val: &[u8]) -> BVDecodeResult<bool>
+        where Size: BVSize + ByteDecodable
+    {
+        Ok(val[0] != 0u8)
+    }
+}
