@@ -1,7 +1,7 @@
 bytevec2: A Rust serialization library that uses byte vectors
 =============================================================
 
-[![](https://img.shields.io/crates/v/bytevec.svg)](https://crates.io/crates/bytevec)
+[![](https://img.shields.io/crates/v/bytevec2.svg)](https://crates.io/crates/bytevec2)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE-MIT)
 [![Apache 2.0 licensed](https://img.shields.io/badge/license-APACHE%202.0-blue.svg)](./LICENSE-APACHE)
 
@@ -10,8 +10,6 @@ serialize data objects to a byte vector (`Vec<u8>`) and back.
 
 bytevec2 is a fork of bytevec meant to be used in recent versions of the rust compilers,
 getting rids of warnings and introducing new features.
-
-Read the documentation [here](http://fero23.github.io/doc/bytevec/).
 
 What does it do?
 ----------------
