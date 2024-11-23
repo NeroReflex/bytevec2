@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate bytevec2;
 
-use bytevec2::{ByteEncodable, ByteDecodable};
+use bytevec2::{ByteDecodable, ByteEncodable};
 
 #[test]
 fn test_serialize_vec() {
@@ -12,7 +12,7 @@ fn test_serialize_vec() {
             profile: Profile,
             dept: String
         }
-        
+
         #[derive(PartialEq, Eq, Debug)]
         struct Profile {
             id: u32,
@@ -20,32 +20,31 @@ fn test_serialize_vec() {
             last_name: String
         }
     }
-    
+
     let employees_1 = vec![
         Employee {
             id: 1,
             profile: Profile {
                 id: 10000,
                 name: "Michael".to_string(),
-                last_name: "Jackson".to_string()
+                last_name: "Jackson".to_string(),
             },
-            dept: "music".to_string()
+            dept: "music".to_string(),
         },
         Employee {
             id: 2,
             profile: Profile {
                 id: 10001,
                 name: "John".to_string(),
-                last_name: "Cena".to_string()
+                last_name: "Cena".to_string(),
             },
-            dept: "wrestling".to_string()
-        }
+            dept: "wrestling".to_string(),
+        },
     ];
     let bytes = employees_1.encode::<u32>().unwrap();
     let employees_2 = Vec::<Employee>::decode::<u32>(&bytes).unwrap();
     assert_eq!(employees_1, employees_2);
 }
-
 
 bytevec_decl! {
     #[derive(PartialEq, Eq, Debug)]
@@ -104,7 +103,7 @@ fn test_serialize_slice_with_map_containers() {
                 meetings_jack.insert("New York".to_string(), "Michael".to_string());
                 meetings_jack.insert("Nippon".to_string(), "Koichi".to_string());
                 meetings_jack
-            }
+            },
         },
         MeetingsLog {
             id: 2,
@@ -114,10 +113,10 @@ fn test_serialize_slice_with_map_containers() {
                 meeting_juan.insert("España".to_string(), "José".to_string());
                 meeting_juan.insert("Korea".to_string(), "Lee Hyun".to_string());
                 meeting_juan
-            }
-        }
+            },
+        },
     ];
-     
+
     let bytes = slice.encode::<u64>().unwrap();
     let vec = <Vec<MeetingsLog>>::decode::<u64>(&bytes).unwrap();
     assert_eq!(vec, slice);
@@ -145,16 +144,16 @@ fn test_serialize_bool() {
             optional: Vec<bool>
         }
     }
-    
+
     let data1 = vec![
         BooleanStuff {
             simple: true,
-            optional: vec![true, false, false, false]
+            optional: vec![true, false, false, false],
         },
         BooleanStuff {
             simple: false,
-            optional: vec![true, false, true, false]
-        }
+            optional: vec![true, false, true, false],
+        },
     ];
     let bytes = data1.encode::<u32>().unwrap();
     let data2 = Vec::<BooleanStuff>::decode::<u32>(&bytes).unwrap();
@@ -171,18 +170,18 @@ fn test_serialize_options() {
             some_vec: Option<Vec<u32>>
         }
     }
-    
+
     let data1 = vec![
         OptionStuff {
             simple: None,
             some: Some(8i64),
-            some_vec: Some(vec![7,3,5,9,1,4,4])
+            some_vec: Some(vec![7, 3, 5, 9, 1, 4, 4]),
         },
         OptionStuff {
             simple: Some(true),
             some: Some(50i64),
-            some_vec: Some(vec![1,2,3,5,4,6,7,8,9,10])
-        }
+            some_vec: Some(vec![1, 2, 3, 5, 4, 6, 7, 8, 9, 10]),
+        },
     ];
     let bytes = data1.encode::<u32>().unwrap();
     let data2 = Vec::<OptionStuff>::decode::<u32>(&bytes).unwrap();

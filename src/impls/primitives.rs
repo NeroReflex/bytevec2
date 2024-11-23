@@ -1,8 +1,8 @@
-use traits::{ByteEncodable, ByteDecodable};
-use errors::{ByteVecError, BVExpectedSize};
-use std::mem::transmute;
-use {BVEncodeResult, BVDecodeResult, BVSize};
+use errors::{BVExpectedSize, ByteVecError};
 use std::mem::size_of;
+use std::mem::transmute;
+use traits::{ByteDecodable, ByteEncodable};
+use {BVDecodeResult, BVEncodeResult, BVSize};
 
 macro_rules! impl_integrals {
     {$($t:ty : $size:expr),*} => {
@@ -95,13 +95,15 @@ as_unsized_impl! {
 
 impl ByteEncodable for usize {
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         Some(Size::from_usize(size_of::<usize>()))
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         match size_of::<usize>() {
             2 => (*self as u16).encode::<Size>(),
@@ -114,7 +116,8 @@ impl ByteEncodable for usize {
 
 impl ByteDecodable for usize {
     fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<usize>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         Ok(match size_of::<usize>() {
             2 => (u16::decode::<Size>(bytes))?.as_usize(),

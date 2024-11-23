@@ -23,19 +23,19 @@ macro_rules! def_BVSize {
                 fn from_usize(val: usize) -> $t {
                     val as $t
                 }
-                
+
                 fn as_usize(&self) -> usize {
                     *self as usize
                 }
-                
+
                 fn max_value() -> Self {
                     <$t>::max_value()
                 }
-                
+
                 fn checked_add(self, rhs: Self) -> Option<$t> {
                     self.checked_add(rhs)
                 }
-                
+
                 fn get_size_of() -> Self {
                     <$t>::from_usize(::std::mem::size_of::<$t>())
                 }

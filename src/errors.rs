@@ -1,10 +1,10 @@
-use std::str::Utf8Error;
 use std::convert::From;
 use std::error::Error;
 use std::fmt::{self, Display};
+use std::str::Utf8Error;
 
-use self::ByteVecError::*;
 use self::BVExpectedSize::*;
+use self::ByteVecError::*;
 
 #[derive(Debug, Clone, Copy)]
 pub enum BVExpectedSize {
@@ -28,20 +28,24 @@ impl Display for ByteVecError {
         match *self {
             StringDecodeUtf8Error(utf8_error) => write!(f, "StringDecodeUtf8Error: {}", utf8_error),
             BadSizeDecodeError { expected, actual } => {
-                write!(f,
-                       "The size expected for the structure is {}, but the size of the given \
+                write!(
+                    f,
+                    "The size expected for the structure is {}, but the size of the given \
                         buffer is {}",
-                       match expected {
-                           LessOrEqualThan(expected) => format!("less or equal than {}", expected),
-                           MoreThan(expected) => format!("more than {}", expected),
-                           EqualTo(expected) => expected.to_string(),
-                       },
-                       actual)
+                    match expected {
+                        LessOrEqualThan(expected) => format!("less or equal than {}", expected),
+                        MoreThan(expected) => format!("more than {}", expected),
+                        EqualTo(expected) => expected.to_string(),
+                    },
+                    actual
+                )
             }
             OverflowError => {
-                write!(f,
-                       "OverflowError: The size of the data structure surpasses the \
-                       max value of the integral generic type")
+                write!(
+                    f,
+                    "OverflowError: The size of the data structure surpasses the \
+                       max value of the integral generic type"
+                )
             }
         }
     }

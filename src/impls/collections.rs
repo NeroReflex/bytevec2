@@ -1,44 +1,48 @@
-use traits::{ByteEncodable, ByteDecodable};
-use errors::{ByteVecError, BVExpectedSize};
-use {BVEncodeResult, BVDecodeResult, BVSize};
+use errors::{BVExpectedSize, ByteVecError};
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+use traits::{ByteDecodable, ByteEncodable};
+use {BVDecodeResult, BVEncodeResult, BVSize};
 
 macro_rules! validate_collection {
     ($byte_vec:ident, $index:ident, $len:ident, $size_vec:ident, $ret:expr) => {{
         if $byte_vec.len() >= Size::get_size_of().as_usize() {
-            $len = (Size::decode::<Size>(
-                &$byte_vec[..Size::get_size_of().as_usize()]))?.as_usize();
+            $len = (Size::decode::<Size>(&$byte_vec[..Size::get_size_of().as_usize()]))?.as_usize();
             $index = Size::get_size_of().as_usize();
             let sizes_len = $len * Size::get_size_of().as_usize();
             if $byte_vec[Size::get_size_of().as_usize()..].len() >= sizes_len {
                 $size_vec = Vec::new();
                 for _ in 0..$len {
-                    $size_vec.push((Size::decode::<Size>(
-                        &$byte_vec[$index..$index + Size::get_size_of().as_usize()]))?);
+                    $size_vec.push(
+                        (Size::decode::<Size>(
+                            &$byte_vec[$index..$index + Size::get_size_of().as_usize()],
+                        ))?,
+                    );
                     $index += Size::get_size_of().as_usize();
                 }
-                let body_size = $size_vec.iter().fold(0, |acc, ref size| acc + size.as_usize());
+                let body_size = $size_vec
+                    .iter()
+                    .fold(0, |acc, ref size| acc + size.as_usize());
                 if body_size == $byte_vec[Size::get_size_of().as_usize() + sizes_len..].len() {
                     $ret
                 } else {
                     Err(ByteVecError::BadSizeDecodeError {
                         expected: BVExpectedSize::EqualTo(
-                            Size::get_size_of().as_usize() + sizes_len + body_size),
-                        actual: $byte_vec.len()
+                            Size::get_size_of().as_usize() + sizes_len + body_size,
+                        ),
+                        actual: $byte_vec.len(),
                     })
                 }
-            }
-            else {
+            } else {
                 Err(ByteVecError::BadSizeDecodeError {
                     expected: BVExpectedSize::MoreThan(Size::get_size_of().as_usize() + sizes_len),
-                    actual: $byte_vec.len()
+                    actual: $byte_vec.len(),
                 })
             }
         } else {
             Err(ByteVecError::BadSizeDecodeError {
                 expected: BVExpectedSize::MoreThan(Size::get_size_of().as_usize()),
-                actual: $byte_vec.len()
+                actual: $byte_vec.len(),
             })
         }
     }};
@@ -46,7 +50,8 @@ macro_rules! validate_collection {
 
 impl ByteEncodable for str {
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         if self.len() <= Size::max_value().as_usize() {
             Some(Size::from_usize(self.len()))
@@ -56,7 +61,8 @@ impl ByteEncodable for str {
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         if self.get_size::<Size>().is_some() {
             let mut bytes = Vec::new();
@@ -70,13 +76,15 @@ impl ByteEncodable for str {
 
 impl<'a> ByteEncodable for &'a str {
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         (**self).get_size::<Size>()
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         (**self).encode::<Size>()
     }
@@ -84,13 +92,15 @@ impl<'a> ByteEncodable for &'a str {
 
 impl ByteEncodable for String {
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         (**self).get_size::<Size>()
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         (**self).encode::<Size>()
     }
@@ -98,42 +108,52 @@ impl ByteEncodable for String {
 
 impl ByteDecodable for String {
     fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<String>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         Ok((::std::str::from_utf8(bytes))?.to_string())
     }
 }
 
 impl<T> ByteEncodable for Option<T>
-where T: ByteEncodable {
+where
+    T: ByteEncodable,
+{
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         match self {
             Some(val) => val.get_size::<Size>()?.checked_add(Size::from_usize(1)),
-            None => Some(Size::from_usize(1))
+            None => Some(Size::from_usize(1)),
         }
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         match self {
-            Some(val) => Ok(std::iter::once(1u8).chain((val.encode::<Size>())?.into_iter()).collect()),
-            None => Ok(vec![0u8])
+            Some(val) => Ok(std::iter::once(1u8)
+                .chain((val.encode::<Size>())?.into_iter())
+                .collect()),
+            None => Ok(vec![0u8]),
         }
     }
 }
 
 impl<T> ByteDecodable for Option<T>
-where T: ByteDecodable {
+where
+    T: ByteDecodable,
+{
     fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<Option<T>>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         if bytes.is_empty() {
-            return Ok(None)
+            return Ok(None);
         } else if (bytes.len() == 1) && (bytes[0] == 0u8) {
-            return Ok(None)
+            return Ok(None);
         }
 
         Ok(Some(T::decode::<Size>(&bytes[1..])?))
@@ -142,29 +162,33 @@ where T: ByteDecodable {
 
 macro_rules! collection_encode_impl {
     () => {
-        fn get_size<Size>(&self) -> Option<Size> where Size: BVSize + ByteEncodable {
+        fn get_size<Size>(&self) -> Option<Size>
+        where
+            Size: BVSize + ByteEncodable,
+        {
             self.iter()
                 .fold(Some(Size::from_usize(0)), |acc, elem| {
                     acc.and_then(|acc: Size| {
-                        (&elem)
-                            .get_size::<Size>()
-                            .and_then(|size| {
-                                acc.checked_add(size).and_then(|acc_size|
-                                    acc_size.checked_add(Size::get_size_of())
-                                )
-                            })
+                        (&elem).get_size::<Size>().and_then(|size| {
+                            acc.checked_add(size)
+                                .and_then(|acc_size| acc_size.checked_add(Size::get_size_of()))
+                        })
                     })
                 })
                 .and_then(|total: Size| total.checked_add(Size::get_size_of()))
         }
 
-        fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>> where Size: BVSize + ByteEncodable {
+        fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
+        where
+            Size: BVSize + ByteEncodable,
+        {
             if self.get_size::<Size>().is_some() {
                 let mut bytes = Vec::new();
                 bytes.extend_from_slice(&((Size::from_usize(self.len())).encode::<Size>())?);
                 for elem in self {
-                    bytes.extend_from_slice(&(
-                        (&elem).get_size::<Size>().unwrap().encode::<Size>())?);
+                    bytes.extend_from_slice(
+                        &((&elem).get_size::<Size>().unwrap().encode::<Size>())?,
+                    );
                 }
                 for elem in self {
                     bytes.extend_from_slice(&((&elem).encode::<Size>())?);
@@ -174,20 +198,23 @@ macro_rules! collection_encode_impl {
                 Err(ByteVecError::OverflowError)
             }
         }
-    }
+    };
 }
 
 impl<T> ByteEncodable for Vec<T>
-    where T: ByteEncodable
+where
+    T: ByteEncodable,
 {
     collection_encode_impl!();
 }
 
 impl<T> ByteDecodable for Vec<T>
-    where T: ByteDecodable
+where
+    T: ByteDecodable,
 {
     fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<Vec<T>>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         let len;
         let mut index;
@@ -204,22 +231,26 @@ impl<T> ByteDecodable for Vec<T>
 }
 
 impl<T> ByteEncodable for [T]
-    where T: ByteEncodable
+where
+    T: ByteEncodable,
 {
     collection_encode_impl!();
 }
 
 impl<T> ByteEncodable for HashSet<T>
-    where T: ByteEncodable + Eq + Hash
+where
+    T: ByteEncodable + Eq + Hash,
 {
     collection_encode_impl!();
 }
 
 impl<T> ByteDecodable for HashSet<T>
-    where T: ByteDecodable + Eq + Hash
+where
+    T: ByteDecodable + Eq + Hash,
 {
     fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<HashSet<T>>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         let len;
         let mut index;
@@ -236,18 +267,21 @@ impl<T> ByteDecodable for HashSet<T>
 }
 
 impl<K, V> ByteEncodable for HashMap<K, V>
-    where K: ByteEncodable + Hash + Eq,
-          V: ByteEncodable
+where
+    K: ByteEncodable + Hash + Eq,
+    V: ByteEncodable,
 {
     collection_encode_impl!();
 }
 
 impl<K, V> ByteDecodable for HashMap<K, V>
-    where K: ByteDecodable + Hash + Eq,
-          V: ByteDecodable
+where
+    K: ByteDecodable + Hash + Eq,
+    V: ByteDecodable,
 {
     fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<HashMap<K, V>>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         let len;
         let mut index;
@@ -255,8 +289,8 @@ impl<K, V> ByteDecodable for HashMap<K, V>
         validate_collection!(bytes, index, len, sizes, {
             let mut map = HashMap::with_capacity(len);
             for size in sizes.into_iter() {
-                let (key, value) = (<(K, V)>::decode::<Size>(&bytes[index..index +
-                                                                               size.as_usize()]))?;
+                let (key, value) =
+                    (<(K, V)>::decode::<Size>(&bytes[index..index + size.as_usize()]))?;
                 map.insert(key, value);
                 index += size.as_usize();
             }
@@ -477,13 +511,15 @@ tuple_impls! {
 
 impl ByteEncodable for () {
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         Some(Size::from_usize(0))
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         // Send only size of 0
         Size::from_usize(0).encode::<Size>()
@@ -492,7 +528,8 @@ impl ByteEncodable for () {
 
 impl ByteDecodable for () {
     fn decode<Size>(_: &[u8]) -> BVDecodeResult<()>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         Ok(())
     }
@@ -500,26 +537,27 @@ impl ByteDecodable for () {
 
 impl ByteEncodable for bool {
     fn get_size<Size>(&self) -> Option<Size>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
         Some(Size::from_usize(1))
     }
 
     fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
-        where Size: BVSize + ByteEncodable
+    where
+        Size: BVSize + ByteEncodable,
     {
-        Ok(
-            match self {
-                true => vec![1u8],
-                false => vec![0u8],
-            }
-        )
+        Ok(match self {
+            true => vec![1u8],
+            false => vec![0u8],
+        })
     }
 }
 
 impl ByteDecodable for bool {
     fn decode<Size>(val: &[u8]) -> BVDecodeResult<bool>
-        where Size: BVSize + ByteDecodable
+    where
+        Size: BVSize + ByteDecodable,
     {
         Ok(val[0] != 0u8)
     }

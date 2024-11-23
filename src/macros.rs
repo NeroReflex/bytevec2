@@ -11,7 +11,7 @@
 /// the one provided to the macro, only the listed fields in the macro invocation
 /// will be serialized and deserialized. In the deserialization process, the
 /// rest of the fields of the `struct` will be initialized using the value
-/// returned from the [`Default::default()`][1] method, so the `struct` must 
+/// returned from the [`Default::default()`][1] method, so the `struct` must
 /// implement [`Default`][2].
 ///
 /// # Examples
@@ -137,7 +137,6 @@ macro_rules! bytevec_impls {
         )*
     };
 }
-
 
 /// Declares the given structures and implements the byte serialization traits.
 ///
