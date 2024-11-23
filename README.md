@@ -6,7 +6,7 @@ bytevec2: A Rust serialization library that uses byte vectors
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE-MIT)
 [![Apache 2.0 licensed](https://img.shields.io/badge/license-APACHE%202.0-blue.svg)](./LICENSE-APACHE)
 
-bytevec takes advantage of Rust's concise and stable type system to
+bytevec2 takes advantage of Rust's concise and stable type system to
 serialize data objects to a byte vector (`Vec<u8>`) and back.
 
 bytevec2 is a fork of bytevec meant to be used in recent versions of the rust compilers,
@@ -37,14 +37,15 @@ returns the vector wrapped around a `BVEncodeResult` instance. If everything
 goes `Ok`, we will be able to get a byte vector value that represents the 
 original data structure.
 
-bytevec doesn't actually do a 1:1 conversion of the bytes of the original
+bytevec2 doesn't actually do a 1:1 conversion of the bytes of the original
 type instance, as not every Rust type is stored on the stack. For any type
 that wraps a heap stored value, it will give a representation of the 
 underlying value.
 
-bytevec implements `ByteEncodable` out of the box for the following types:
+bytevec2 implements `ByteEncodable` out of the box for the following types:
 - The integral types: `u8`, `u16`, `u32`, `u64`, `i8`, `i16`, `i32`, `i64`
 - The floating point types: `f32` and `f64`
+- The boolean type `bool`
 - `char`, `str` and `String`
 - [`Vec`](http://doc.rust-lang.org/stable/std/vec/struct.Vec.html)
 - [`&[T]`](http://doc.rust-lang.org/stable/std/primitive.slice.html)
@@ -53,12 +54,12 @@ bytevec implements `ByteEncodable` out of the box for the following types:
 - Tuples with up to 12 elements
 - Custom `struct`s
 
-For collections and other structures, automatic implementation of bytevec
+For collections and other structures, automatic implementation of bytevec2
 requires that all of its underlying elements implement the `ByteEncodable`
 trait.
 
-### The bytevec serialization format
-bytevec doesn't follow any particular serialization format. It follows simple
+### The bytevec2 serialization format
+bytevec2 doesn't follow any particular serialization format. It follows simple
 rules when translating some type value to bytes:
 - For a primitive type such as the integral types, floating points
 or char that have fixed size, it will just grab the bytes and put them 
@@ -101,7 +102,7 @@ Almost all of the out of the box implementations of `ByteEncodable` also
 implement `ByteDecodable`, but some of them, particularly the slices and 
 the tuple references don't make sense when deserialized, as they can't
 point to the original data they were referencing. This is usually a problem
-that requires some tweaking, but bytevec allows data conversion from byte
+that requires some tweaking, but bytevec2 allows data conversion from byte
 buffers that were originally referenced data to a new instance of an owned data type,
 as long as the size requirements are the same. This way, slice data can
 be assigned to a `Vec` instance for example, as long as they share the same 
@@ -194,7 +195,7 @@ fn main() {
 ```
 
 #### This all sounds like your usual serialization library, but why bother with bytes?
-bytevec certainly isn't for everyone. It isn't a full serialization library like
+bytevec2 certainly isn't for everyone. It isn't a full serialization library like
 [rustc_serialize] or [serde], nor is it trying to become one. This is for the people
 that for any reason can't handle text based serialization and just need 
 to get some bytes fast and recreate an object out of them with low overhead through the use
