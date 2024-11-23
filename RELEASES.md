@@ -1,3 +1,8 @@
+# Version 0.3.1 (2024-11-24)
+- Rename the crate to bytevec2
+- implement bool
+- implement Option
+
 # Version 0.2.0 (2016-06-06)
 - Rename the `bytevec_impls` macro to `bytevec_decl`. This macro now accepts a pub 
   access modifier on the declared `struct` and on its fields. 
