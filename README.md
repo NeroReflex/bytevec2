@@ -47,10 +47,11 @@ bytevec2 implements `ByteEncodable` out of the box for the following types:
 - The floating point types: `f32` and `f64`
 - The boolean type `bool`
 - `char`, `str` and `String`
-- [`Vec`](http://doc.rust-lang.org/stable/std/vec/struct.Vec.html)
-- [`&[T]`](http://doc.rust-lang.org/stable/std/primitive.slice.html)
-- [`HashMap`](http://doc.rust-lang.org/stable/std/collections/struct.HashMap.html)
-- [`HashSet`](http://doc.rust-lang.org/stable/std/collections/struct.HashSet.html)
+- [`Option`](https://doc.rust-lang.org/std/option/enum.Option.html)
+- [`Vec`](https://doc.rust-lang.org/stable/std/vec/struct.Vec.html)
+- [`&[T]`](https://doc.rust-lang.org/stable/std/primitive.slice.html)
+- [`HashMap`](https://doc.rust-lang.org/stable/std/collections/struct.HashMap.html)
+- [`HashSet`](https://doc.rust-lang.org/stable/std/collections/struct.HashSet.html)
 - Tuples with up to 12 elements
 - Custom `struct`s
 
