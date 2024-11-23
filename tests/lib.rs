@@ -160,3 +160,31 @@ fn test_serialize_bool() {
     let data2 = Vec::<BooleanStuff>::decode::<u32>(&bytes).unwrap();
     assert_eq!(data1, data2);
 }
+
+#[test]
+fn test_serialize_options() {
+    bytevec_decl! {
+        #[derive(PartialEq, Eq, Clone, Debug)]
+        struct OptionStuff {
+            simple: Option<bool>,
+            some: Option<i64>,
+            some_vec: Option<Vec<u32>>
+        }
+    }
+    
+    let data1 = vec![
+        OptionStuff {
+            simple: None,
+            some: Some(8i64),
+            some_vec: Some(vec![7,3,5,9,1,4,4])
+        },
+        OptionStuff {
+            simple: Some(true),
+            some: Some(50i64),
+            some_vec: Some(vec![1,2,3,5,4,6,7,8,9,10])
+        }
+    ];
+    let bytes = data1.encode::<u32>().unwrap();
+    let data2 = Vec::<OptionStuff>::decode::<u32>(&bytes).unwrap();
+    assert_eq!(data1, data2);
+}

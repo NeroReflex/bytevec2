@@ -104,6 +104,42 @@ impl ByteDecodable for String {
     }
 }
 
+impl<T> ByteEncodable for Option<T>
+where T: ByteEncodable {
+    fn get_size<Size>(&self) -> Option<Size>
+        where Size: BVSize + ByteEncodable
+    {
+        match self {
+            Some(val) => val.get_size::<Size>()?.checked_add(Size::from_usize(1)),
+            None => Some(Size::from_usize(1))
+        }
+    }
+
+    fn encode<Size>(&self) -> BVEncodeResult<Vec<u8>>
+        where Size: BVSize + ByteEncodable
+    {
+        match self {
+            Some(val) => Ok(std::iter::once(1u8).chain((val.encode::<Size>())?.into_iter()).collect()),
+            None => Ok(vec![0u8])
+        }
+    }
+}
+
+impl<T> ByteDecodable for Option<T>
+where T: ByteDecodable {
+    fn decode<Size>(bytes: &[u8]) -> BVDecodeResult<Option<T>>
+        where Size: BVSize + ByteDecodable
+    {
+        if bytes.is_empty() {
+            return Ok(None)
+        } else if (bytes.len() == 1) && (bytes[0] == 0u8) {
+            return Ok(None)
+        }
+
+        Ok(Some(T::decode::<Size>(&bytes[1..])?))
+    }
+}
+
 macro_rules! collection_encode_impl {
     () => {
         fn get_size<Size>(&self) -> Option<Size> where Size: BVSize + ByteEncodable {
