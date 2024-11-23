@@ -2,6 +2,7 @@ bytevec2: A Rust serialization library that uses byte vectors
 =============================================================
 
 [![Build Status](https://travis-ci.org/fero23/bytevec.svg?branch=master)](https://travis-ci.org/fero23/bytevec)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNeroReflex%2Fbytevec2.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FNeroReflex%2Fbytevec2?ref=badge_shield)
 [![](https://img.shields.io/crates/v/bytevec.svg)](https://crates.io/crates/bytevec)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE-MIT)
 [![Apache 2.0 licensed](https://img.shields.io/badge/license-APACHE%202.0-blue.svg)](./LICENSE-APACHE)
@@ -211,3 +212,5 @@ You are free to use any of them as you see fit.
 [`std::mem::transmute`]: http://doc.rust-lang.org/stable/std/mem/fn.transmute.html
 [rustc_serialize]: https://github.com/rust-lang-nursery/rustc-serialize
 [serde]: https://github.com/serde-rs/serde
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FNeroReflex%2Fbytevec2.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FNeroReflex%2Fbytevec2?ref=badge_large)
